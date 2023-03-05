@@ -1,0 +1,26 @@
+{
+  "name": "supplychain",
+  "version": "1.0.0",
+  "description": "Supply Chain Track and Trace System",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benjaminbills/supplychain.git"
+  },
+  "author": "Benjamin Obafemi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/benjaminbills/supplychain/issues"
+  },
+  "homepage": "https://github.com/benjaminbills/supplychain#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "nodemon": "^2.0.21"
+  }
+}
