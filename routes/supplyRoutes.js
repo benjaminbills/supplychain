@@ -1,11 +1,20 @@
 const express = require('express');
 const supplyItemController = require('../controllers/supplyItemController');
+const authController = require('../controllers/authController');
+
 const router = express.Router();
 
 router
   .route('/')
-  .post(supplyItemController.createItem)
-  .get(supplyItemController.getAllItems);
+  .post(
+    authController.protect,
+    authController.restrictTo('manufacturer', 'admin'),
+    supplyItemController.createItem
+  )
+  .get(
+    authController.restrictTo('manufacturer', 'user'),
+    supplyItemController.getAllItems
+  );
 router
   .route('/:id')
   .get(supplyItemController.getOneItem)

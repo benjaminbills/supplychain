@@ -117,3 +117,53 @@ exports.protect = async (req, res, next) => {
     res.status(401).json({ error: 'Unauthorized' });
   }
 };
+
+// exports.restrictTo = (...roles) => {
+//   return async (req, res, next) => {
+//     let token;
+//     if (
+//       req.headers.authorization &&
+//       req.headers.authorization.startsWith('Bearer')
+//     ) {
+//       token = req.headers.authorization.split(' ')[1];
+//     } else if (req.cookies.jwt) {
+//       token = req.cookies.jwt;
+//     }
+//     try {
+//       const decoded = jwt.verify(token, 'weell');
+//       console.log(decoded);
+//       const user = await User.findById(decoded.userId);
+//       console.log(user.role);
+//       !roles.includes(user.role);
+//       next();
+//     } catch (error) {
+//       res
+//         .status(401)
+//         .json({ error: 'You do not have permission to perform this action' });
+//     }
+//   };
+// };
+exports.restrictTo = (...roles) => {
+  return async (req, res, next) => {
+    let token;
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith('Bearer')
+    ) {
+      token = req.headers.authorization.split(' ')[1];
+    } else if (req.cookies.jwt) {
+      token = req.cookies.jwt;
+    }
+    try {
+      const decoded = jwt.verify(token, 'weell');
+      const user = await User.findById(decoded.userId);
+      if (!roles.includes(user.role)) {
+        throw new Error('You do not have permission to perform this action');
+      }
+      next();
+    } catch (error) {
+      const errorMessage = 'You do not have permission to perform this action';
+      res.status(401).json({ error: errorMessage });
+    }
+  };
+};
