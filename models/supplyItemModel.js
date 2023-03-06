@@ -10,6 +10,10 @@ const itemSchema = new mongoose.Schema({
   },
   description: {
     type: String,
+    required: false,
+  },
+  manufacturer: {
+    type: String,
     required: true,
   },
   cost: {
@@ -19,10 +23,6 @@ const itemSchema = new mongoose.Schema({
   dateAdded: {
     type: Date,
     default: Date.now,
-  },
-  quantity: {
-    type: Number,
-    required: true,
   },
   color: {
     type: String,

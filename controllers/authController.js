@@ -19,6 +19,7 @@ exports.signUp = async (req, res) => {
     console.log(error);
     res.status(400).json({
       status: 'fail',
+      message: error,
     });
   }
 };
@@ -36,7 +37,6 @@ exports.login = async (req, res) => {
     }
     const isCorrect = await bycrypt.compare(password, user.password);
     if (isCorrect) {
-      console.log(req.sessions);
       res.status(200).json({
         status: 'success',
       });
@@ -46,6 +46,40 @@ exports.login = async (req, res) => {
         message: 'incorrect username or password',
       });
     }
+  } catch (error) {
+    res.status(400).json({
+      status: 'fail',
+    });
+  }
+};
+
+exports.updateRole = async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    res.status(200).json({
+      status: 'success',
+      data: {
+        user,
+      },
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'fail',
+    });
+  }
+};
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json({
+      status: 'success',
+      data: {
+        users,
+      },
+    });
   } catch (error) {
     res.status(400).json({
       status: 'fail',

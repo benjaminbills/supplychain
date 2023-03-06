@@ -1,6 +1,7 @@
 const express = require('express');
-const userRouter = require('./routes/userRoutes');
 const mongoose = require('mongoose');
+const userRouter = require('./routes/userRoutes');
+const supplyRouter = require('./routes/supplyRoutes');
 
 const app = express();
 // const mongoURL = `mongodb://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_IP}:${MONGO_PORT}/?authSource=admin`;
@@ -28,6 +29,7 @@ app.get('/api', (req, res) => {
 });
 
 app.use('/api/users', userRouter);
+app.use('/api/supply', supplyRouter);
 
 const port = process.env.PORT || 3000;
 
