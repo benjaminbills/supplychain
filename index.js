@@ -1,8 +1,10 @@
 const express = require('express');
 const userRouter = require('./routes/userRoutes');
+const mongoose = require('mongoose');
+
 const app = express();
 // const mongoURL = `mongodb://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_IP}:${MONGO_PORT}/?authSource=admin`;
-const mongoURL = `mongodb://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_IP}:${MONGO_PORT}/?authSource=admin`;
+const mongoURL = `mongodb://localhost/supplychain`;
 
 const connectWithRetry = () => {
   mongoose
