@@ -18,6 +18,7 @@ exports.createItem = async (req, res) => {
   }
 };
 exports.getAllItems = async (req, res) => {
+  console.log(req.headers);
   try {
     const allItems = await Item.find();
     res.status(201).json({
@@ -35,6 +36,8 @@ exports.getAllItems = async (req, res) => {
   }
 };
 exports.getOneItem = async (req, res) => {
+  console.log(req.params.id);
+
   try {
     const item = await Item.findById(req.params.id);
     res.status(201).json({

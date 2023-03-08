@@ -37,12 +37,14 @@ exports.getOrders = async (req, res) => {
   }
 };
 exports.getOneOrder = async (req, res) => {
+  console.log(req.params.id);
   try {
     const order = await Order.findById(req.params.id);
+    console.log(order);
     res.status(201).json({
       status: 'Success',
       data: {
-        order: order,
+        order,
       },
     });
   } catch (error) {

@@ -67,10 +67,18 @@ exports.login = async (req, res) => {
 
 exports.updateRole = async (req, res) => {
   try {
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    if (!req.body.role) {
+      throw new Error('Incorrect data');
+    }
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { role: req.body.role },
+      {
+        new: true,
+        runValidators: true,
+      }
+    ).select('-password');
+
     res.status(200).json({
       status: 'success',
       data: {
@@ -79,13 +87,13 @@ exports.updateRole = async (req, res) => {
     });
   } catch (error) {
     res.status(400).json({
-      status: 'fail',
+      status: error,
     });
   }
 };
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await User.find().select('-password');
     res.status(200).json({
       status: 'success',
       data: {
@@ -102,22 +110,17 @@ exports.getAllUsers = async (req, res) => {
 exports.protect = async (req, res, next) => {
   // 1)Getting token and check if its there
   let token;
+  console.log(req.headers.authorization);
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
   ) {
+    console.log('iamhere');
     token = req.headers.authorization.split(' ')[1];
-  } else if (req.cookies.jwt) {
-    token = req.cookies.jwt;
   }
   console.log(token || 'No token added to the request');
-
-  if (!token) {
-    res.status(401).json({ error: 'Unauthorized' });
-  }
-  //  2)Verification token
   try {
-    const decoded = jwt.verify(token, 'weell');
+    const decoded = jwt.verify(token, `${JWT_SECRET}`);
     await User.findById(decoded.id);
     next();
   } catch (error) {
@@ -125,31 +128,6 @@ exports.protect = async (req, res, next) => {
   }
 };
 
-// exports.restrictTo = (...roles) => {
-//   return async (req, res, next) => {
-//     let token;
-//     if (
-//       req.headers.authorization &&
-//       req.headers.authorization.startsWith('Bearer')
-//     ) {
-//       token = req.headers.authorization.split(' ')[1];
-//     } else if (req.cookies.jwt) {
-//       token = req.cookies.jwt;
-//     }
-//     try {
-//       const decoded = jwt.verify(token, 'weell');
-//       console.log(decoded);
-//       const user = await User.findById(decoded.userId);
-//       console.log(user.role);
-//       !roles.includes(user.role);
-//       next();
-//     } catch (error) {
-//       res
-//         .status(401)
-//         .json({ error: 'You do not have permission to perform this action' });
-//     }
-//   };
-// };
 exports.restrictTo = (...roles) => {
   return async (req, res, next) => {
     let token;
@@ -162,7 +140,7 @@ exports.restrictTo = (...roles) => {
       token = req.cookies.jwt;
     }
     try {
-      const decoded = jwt.verify(token, 'weell');
+      const decoded = jwt.verify(token, `${JWT_SECRET}`);
       const user = await User.findById(decoded.userId);
       if (!roles.includes(user.role)) {
         throw new Error('You do not have permission to perform this action');

@@ -4,6 +4,39 @@ const userRouter = require('./routes/userRoutes');
 const orderRouter = require('./routes/orderRoutes');
 const cors = require('cors');
 const supplyRouter = require('./routes/supplyRoutes');
+const swaggerJSDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Supply Chain App',
+    },
+    servers: [
+      {
+        url: 'http://localhost:5000',
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+  },
+  apis: ['./routes/*.js'],
+  security: [
+    {
+      bearerAuth: [],
+    },
+  ],
+};
+
+const swaggerSpec = swaggerJSDoc(options);
+
 const {
   MONGO_USER,
   MONGO_PASSWORD,
@@ -31,6 +64,7 @@ const connectWithRetry = () => {
 connectWithRetry();
 app.enable('trust proxy');
 app.use(cors({}));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(express.json());
 app.get('/api', (req, res) => {
@@ -38,6 +72,7 @@ app.get('/api', (req, res) => {
 });
 
 app.use('/api/users', userRouter);
+
 app.use('/api/supply', supplyRouter);
 app.use('/api/order', orderRouter);
 
