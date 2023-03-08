@@ -11,13 +11,16 @@ router
     authController.restrictTo('manufacturer', 'admin'),
     supplyItemController.createItem
   )
-  .get(
-    authController.restrictTo('manufacturer', 'user'),
-    supplyItemController.getAllItems
-  );
+  .get(supplyItemController.getAllItems);
 router
   .route('/:id')
   .get(supplyItemController.getOneItem)
-  .patch(supplyItemController.updateItem)
-  .delete(supplyItemController.deleteItem);
+  .patch(
+    authController.restrictTo('manufacturer', 'admin'),
+    supplyItemController.updateItem
+  )
+  .delete(
+    authController.restrictTo('manufacturer', 'admin'),
+    supplyItemController.deleteItem
+  );
 module.exports = router;

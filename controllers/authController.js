@@ -1,6 +1,7 @@
 const User = require('../models/userModel');
 const bycrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { JWT_SECRET } = require('../config/config');
 
 exports.signUp = async (req, res) => {
   const { username, password } = req.body;
@@ -13,7 +14,7 @@ exports.signUp = async (req, res) => {
     });
     const token = jwt.sign(
       { userId: newUser._id, email: newUser.email },
-      'weell',
+      `${JWT_SECRET}`,
       {
         expiresIn: '1h',
       }
@@ -29,6 +30,7 @@ exports.signUp = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
+  console.log(req.body);
   const { username, password } = req.body;
 
   try {
@@ -41,9 +43,13 @@ exports.login = async (req, res) => {
     }
     const isCorrect = await bycrypt.compare(password, user.password);
     if (isCorrect) {
-      const token = jwt.sign({ userId: user._id, email: user.email }, 'weell', {
-        expiresIn: '1h',
-      });
+      const token = jwt.sign(
+        { userId: user._id, email: user.email },
+        `${JWT_SECRET}`,
+        {
+          expiresIn: '1h',
+        }
+      );
       res.status(200).json({ token });
     } else {
       res.status(400).json({
@@ -52,6 +58,7 @@ exports.login = async (req, res) => {
       });
     }
   } catch (error) {
+    console.log(error);
     res.status(400).json({
       status: 'fail',
     });
