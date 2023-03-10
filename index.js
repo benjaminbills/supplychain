@@ -10,7 +10,7 @@ const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Supply Chain App',
+      title: 'Supply Chain Track and Trace',
     },
     servers: [
       {
