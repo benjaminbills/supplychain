@@ -2,7 +2,17 @@ const Item = require('../models/supplyItemModel');
 
 exports.createItem = async (req, res) => {
   try {
-    const newItem = await Item.create(req.body);
+    let { name, category, description, manufacturer, cost, dateAdded, color } =
+      req.body;
+    const newItem = await Item.create({
+      name,
+      category,
+      description,
+      manufacturer,
+      cost,
+      dateAdded,
+      color,
+    });
     res.status(201).json({
       status: 'Success',
       data: {
@@ -24,7 +34,7 @@ exports.getAllItems = async (req, res) => {
     res.status(201).json({
       status: 'Success',
       data: {
-        item: allItems,
+        items: allItems,
       },
     });
   } catch (error) {
@@ -71,19 +81,6 @@ exports.updateItem = async (req, res) => {
     res.status(400).json({
       status: 'fail',
       message: error,
-    });
-  }
-};
-
-exports.deleteItem = async (req, res, next) => {
-  try {
-    const item = await Item.findByIdAndDelete(req.params.id);
-    res.status(200).json({
-      status: 'success',
-    });
-  } catch (error) {
-    res.status(400).json({
-      status: 'fail',
     });
   }
 };

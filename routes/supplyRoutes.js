@@ -1,6 +1,5 @@
 const express = require('express');
 const supplyItemController = require('../controllers/supplyItemController');
-const authController = require('../controllers/authController');
 
 const router = express.Router();
 
@@ -19,18 +18,27 @@ const router = express.Router();
  *         name:
  *           type: string
  *           description: Product name
+ *           example: A4 Batteries
  *         category:
  *           type: string
  *           description: Item category e.g furniture, electronics
+ *           example: Electronics
  *         description:
  *           type: string
  *           description: Item description
+ *           example: Long Lasting Batteries
  *         manufacturer:
  *           type: string
  *           description: Item manufacturer
+ *           example: Tesla
  *         cost:
  *           type: number
  *           description: cost of item
+ *           example: 10
+ *         color:
+ *            type: string
+ *            description: item color
+ *            example: Black
  *
  */
 /**
@@ -51,17 +59,14 @@ const router = express.Router();
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/Item'
- *         authorization:
- *             - bearerAuth
- *     security:
- *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: The item was successfully created
+ *         description: created by item
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Item'
+ *               item:
+ *                 $ref: '#/components/schemas/Item'
  *       500:
  *         description: Some server error
  *   get:
@@ -82,11 +87,7 @@ const router = express.Router();
 
 router
   .route('/')
-  .post(
-    authController.protect,
-    authController.restrictTo('manufacturer', 'admin'),
-    supplyItemController.createItem
-  )
+  .post(supplyItemController.createItem)
   .get(supplyItemController.getAllItems);
 /**
  * @openapi
@@ -97,7 +98,7 @@ router
  *     parameters:
  *       - name : id
  *         in: path
- *         description: ID of the user to update
+ *         description: ID of the item to update
  *         required: true
  *     responses:
  *       200:
@@ -105,76 +106,43 @@ router
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Item'
- *       500:
- *         description: Some server error
- *   delete:
- *     summary: delete an item
- *     tags: [Item]
- *     authorization:
- *             - bearerAuth
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - name : id
- *         in: path
- *         description: ID of the user to update
- *         required: true
- *     responses:
- *       200:
- *         description: Delete an item
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Item'
+ *               status: Success
+ *               data:
+ *                  item:
+ *                    $ref: '#/components/schemas/Item'
  *       500:
  *         description: Some server error
  *   patch:
  *     summary: update an item
  *     tags: [Item]
- *     authorization:
- *             - bearerAuth
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - name : id
- *         in: path
- *         description: ID of the user to update
- *         required: true
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/Item'
+ *     parameters:
+ *       - name : id
+ *         in: path
+ *         description: ID of the item to update
+ *         required: true
  *     responses:
  *       200:
- *         description: The list of the items
+ *         description: Result of updated item
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Item'
+ *               status: Success
+ *               data:
+ *                  item:
+ *                    $ref: '#/components/schemas/Item'
  *       500:
- *         description: Some server error
+ *          description: Some server error
  */
 
 router
   .route('/:id')
   .get(supplyItemController.getOneItem)
-  .patch(
-    authController.protect,
-    authController.restrictTo('manufacturer', 'admin'),
-    supplyItemController.updateItem
-  )
-  .delete(
-    authController.protect,
-    authController.restrictTo('manufacturer', 'admin'),
-    supplyItemController.deleteItem
-  );
+  .patch(supplyItemController.updateItem);
+
 module.exports = router;
