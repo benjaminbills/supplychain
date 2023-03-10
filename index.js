@@ -1,9 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const userRouter = require('./routes/userRoutes');
-const orderRouter = require('./routes/orderRoutes');
 const cors = require('cors');
 const supplyRouter = require('./routes/supplyRoutes');
+const eventRouter = require('./routes/eventRoutes');
+
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const options = {
@@ -17,15 +17,6 @@ const options = {
         url: 'http://localhost:5000',
       },
     ],
-    components: {
-      securitySchemes: {
-        bearerAuth: {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT',
-        },
-      },
-    },
   },
   apis: ['./routes/*.js'],
   security: [
@@ -71,10 +62,8 @@ app.get('/api', (req, res) => {
   res.send('<h2>Hi There!!!</h2>');
 });
 
-app.use('/api/users', userRouter);
-
-app.use('/api/supply', supplyRouter);
-app.use('/api/order', orderRouter);
+app.use('/api/supplyItem', supplyRouter);
+app.use('/api/item', eventRouter);
 
 const port = process.env.PORT || 5000;
 
