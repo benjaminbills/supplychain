@@ -62,7 +62,7 @@ app.get('/api', (req, res) => {
   res.send('<h2>Hi There!!!</h2>');
 });
 
-app.use('/api/supplyItem', supplyRouter);
+app.use('/api/supply', supplyRouter);
 app.use('/api/item', eventRouter);
 
 const port = process.env.PORT || 5000;
