@@ -28,7 +28,7 @@ exports.getAllItemEvent = async (req, res) => {
   console.log(req.headers);
   const { id } = req.params;
   try {
-    const allItemEvent = await Event.find({ item: id });
+    const allItemEvent = await Event.find({ item: id }).sort({ timestamp: -1 });
     res.status(201).json({
       status: 'Success',
       data: {
